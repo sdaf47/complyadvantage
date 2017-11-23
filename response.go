@@ -1,5 +1,9 @@
 package complyadvantage
 
+import (
+	"encoding/json"
+)
+
 const (
 	EntityTypePerson  = "person"
 	EntityTypeCompany = "company"
@@ -56,4 +60,14 @@ type SearchesResponse struct {
 	Content struct {
 		Data []SearchResult `json:"data"`
 	} `json:"content"`
+}
+
+type CertificateResponse struct {
+	PdfData []byte
+}
+
+func readJson(data []byte, v Response) (Response, error) {
+	err := json.Unmarshal(data, v)
+
+	return v, err
 }

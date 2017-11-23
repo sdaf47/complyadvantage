@@ -1,2 +1,3 @@
 # complyadvantage
-go sdk for complyadvantage api
+
+SDK for https://app.complyadvantage.com/search-management#/search/1511261732-6KZaHQ2q

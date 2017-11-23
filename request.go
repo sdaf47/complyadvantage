@@ -1,5 +1,7 @@
 package complyadvantage
 
+type Request interface{}
+
 type SearchesRequest struct {
 	// required
 	SearchTerm    string            `json:"search_term"`

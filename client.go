@@ -20,9 +20,8 @@ const (
 )
 
 const (
-	BaseUrl     = "https://api.complyadvantage.com"
-	ContentType = "application/json"
-	ApiKey      = "api_key"
+	BaseUrl = "https://api.complyadvantage.com"
+	ApiKey  = "api_key"
 )
 
 type Client struct {
@@ -40,10 +39,10 @@ func NewClient(apiKey string) *Client {
 	return c
 }
 
-func (c *Client) send(method, url string, response Response, body io.Reader) (error) {
+func (c *Client) send(method, url string, body io.Reader) (response []byte, err error) {
 	r, err := http.NewRequest(method, BaseUrl+url, body)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	query := r.URL.Query()
@@ -57,77 +56,81 @@ func (c *Client) send(method, url string, response Response, body io.Reader) (er
 
 	result, err := c.httpClient.Do(r)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	buffer, err := ioutil.ReadAll(result.Body)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	if err = json.Unmarshal(buffer, response); err != nil {
-		return err
-	}
-
-	return nil
+	return buffer, nil
 }
 
-func (c *Client) get(url string, response Response) (error) {
-	return c.send(http.MethodGet, url, response, nil)
+func (c *Client) get(url string) ([]byte, error) {
+	return c.send(http.MethodGet, url, nil)
 }
 
-func (c *Client) post(url string, response Response, request interface{}) (error) {
+func (c *Client) post(url string, request Request) ([]byte, error) {
 	br, err := json.Marshal(request)
 	if err != nil {
 		panic(err)
 	}
 
-	return c.send(http.MethodPost, url, response, bytes.NewReader(br))
+	return c.send(http.MethodPost, url, bytes.NewReader(br))
 }
 
-func (c *Client) Search(req *SearchesRequest) (r *SearchResponse, err error) {
-	r = &SearchResponse{}
-	if err := c.post(Searches, r, req); err != nil {
+func (c *Client) jsonPost(url string, request Request, r Response) (Response, error) {
+	data, err := c.post(url, request)
+	if err != nil {
 		return nil, err
 	}
 
-	return r, err
+	return readJson(data, r)
 }
 
-func (c *Client) Users() (r *UsersResponse, err error) {
-	r = &UsersResponse{}
-	if err := c.get(Users, r); err != nil {
+func (c *Client) jsonGet(url string, r Response) (Response, error) {
+	data, err := c.get(url)
+	if err != nil {
 		return nil, err
 	}
 
-	return r, nil
+	return readJson(data, r)
 }
 
-func (c *Client) Searches(term string) (r *SearchResponse, err error) {
-	req := &SearchesRequest{
+func (c *Client) pdfGet(url string) ([]byte, error) {
+	return c.get(url)
+}
+
+func (c *Client) Searches(request *SearchesRequest) (*SearchResponse, error) {
+	r, err := c.jsonPost(Searches, request, &SearchResponse{})
+
+	return r.(*SearchResponse), err
+}
+
+func (c *Client) Users() (*UsersResponse, error) {
+	r, err := c.jsonGet(Users, &UsersResponse{})
+
+	return r.(*UsersResponse), err
+}
+
+func (c *Client) SearchesByTerm(term string) (r *SearchResponse, err error) {
+	request := &SearchesRequest{
 		SearchTerm: term,
 	}
 
-	return c.Search(req)
+	return c.Searches(request)
 }
 
-func (c *Client) SearchesById(id uint) (r *SearchResponse, err error) {
-	r = &SearchResponse{}
+func (c *Client) SearchesById(id uint) (*SearchResponse, error) {
 	url := fmt.Sprintf(SearchesById, id)
-	if err := c.get(url, r); err != nil {
-		return nil, err
-	}
+	r, err := c.jsonGet(url, &SearchResponse{})
 
-	return r, nil
+	return r.(*SearchResponse), err
 }
 
-func (c *Client) SearchesByIdCert(id uint) (r *BaseResponse, err error) {
-	// todo
-	r = &BaseResponse{}
+func (c *Client) SearchesByIdCert(id uint) ([]byte, error) {
 	url := fmt.Sprintf(SearchesByIdCert, id)
-	if err := c.get(url, r); err != nil {
-		return nil, err
-	}
 
-	return r, nil
+	return c.pdfGet(url)
 }

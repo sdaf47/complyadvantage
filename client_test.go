@@ -8,13 +8,13 @@ import (
 )
 
 const (
-	SearchTerm = "Robert Gabriel Mugabe"
+	TestSearchTerm = "John Drake"
 )
 
 var DefaultClient = NewClient("OedyQopDdU41uOtVBc8t7kbgvCnO0tHu") // todo env
 
 func TestClient_Searches(t *testing.T) {
-	r, err := DefaultClient.SearchesByTerm(SearchTerm)
+	r, err := DefaultClient.SearchesByTerm(TestSearchTerm)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -23,8 +23,8 @@ func TestClient_Searches(t *testing.T) {
 		t.Fatalf("status code is %d", r.Code)
 	}
 
-	if r.Content.Data.SearchTerm != SearchTerm {
-		t.Fatalf("%s (resp) != %s (req)", r.Content.Data.SearchTerm, SearchTerm)
+	if r.Content.Data.SearchTerm != TestSearchTerm {
+		t.Fatalf("%s (resp) != %s (req)", r.Content.Data.SearchTerm, TestSearchTerm)
 	}
 }
 
@@ -41,7 +41,7 @@ func TestClient_Users(t *testing.T) {
 }
 
 func TestClient_SearchesById(t *testing.T) {
-	sr, err := DefaultClient.SearchesByTerm(SearchTerm)
+	sr, err := DefaultClient.SearchesByTerm(TestSearchTerm)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -50,8 +50,8 @@ func TestClient_SearchesById(t *testing.T) {
 		t.Fatalf("status code is %d", sr.Code)
 	}
 
-	if sr.Content.Data.SearchTerm != SearchTerm {
-		t.Fatalf("%s (resp) != %s (req)", sr.Content.Data.SearchTerm, SearchTerm)
+	if sr.Content.Data.SearchTerm != TestSearchTerm {
+		t.Fatalf("%s (resp) != %s (req)", sr.Content.Data.SearchTerm, TestSearchTerm)
 	}
 
 	sir, err := DefaultClient.SearchesById(sr.Content.Data.Id)
@@ -69,7 +69,7 @@ func TestClient_SearchesById(t *testing.T) {
 }
 
 func TestClient_SearchesByIdCert(t *testing.T) {
-	sr, err := DefaultClient.SearchesByTerm(SearchTerm)
+	sr, err := DefaultClient.SearchesByTerm(TestSearchTerm)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -78,8 +78,8 @@ func TestClient_SearchesByIdCert(t *testing.T) {
 		t.Fatalf("status code is %d", sr.Code)
 	}
 
-	if sr.Content.Data.SearchTerm != SearchTerm {
-		t.Fatalf("%s (resp) != %s (req)", sr.Content.Data.SearchTerm, SearchTerm)
+	if sr.Content.Data.SearchTerm != TestSearchTerm {
+		t.Fatalf("%s (resp) != %s (req)", sr.Content.Data.SearchTerm, TestSearchTerm)
 	}
 
 	sir, err := DefaultClient.SearchesByIdCert(sr.Content.Data.Id)

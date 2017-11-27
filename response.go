@@ -34,6 +34,8 @@ type SearchResult struct {
 	Id            uint           `json:"id"`
 	Ref           string         `json:"ref"`
 	SearcherId    uint           `json:"searcher_id"`
+	Searcher      Searcher       `json:"assignee"`
+	Assignee      Searcher       `json:"assignee"`
 	AssigneeId    uint           `json:"assignee_id"`
 	SearchProfile *SearchProfile `json:"search_profile"`
 	Filters       *Filter        `json:"filters"`

@@ -134,3 +134,10 @@ func (c *Client) SearchesByIdCert(id uint) ([]byte, error) {
 
 	return c.pdfGet(url)
 }
+
+func (c *Client) SearchesByIdDetails(id uint) (*SearchResponse, error) {
+	url := fmt.Sprintf(SearchesByIdDetails, id)
+	r, err := c.jsonGet(url, &SearchResponse{})
+
+	return r.(*SearchResponse), err
+}

@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	TestSearchTerm = "John Drake"
+	TestSearchTerm = "vladimir putin"
 )
 
 var DefaultClient = NewClient("OedyQopDdU41uOtVBc8t7kbgvCnO0tHu") // todo env
@@ -98,4 +98,32 @@ func TestClient_SearchesByIdCert(t *testing.T) {
 	}
 
 	pdfFile.Close()
+}
+
+func TestClient_SearchesByIdDetails(t *testing.T) {
+	sr, err := DefaultClient.SearchesByTerm(TestSearchTerm)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if sr.Code != http.StatusOK {
+		t.Fatalf("status code is %d", sr.Code)
+	}
+
+	if sr.Content.Data.SearchTerm != TestSearchTerm {
+		t.Fatalf("%s (resp) != %s (req)", sr.Content.Data.SearchTerm, TestSearchTerm)
+	}
+
+	sir, err := DefaultClient.SearchesByIdDetails(sr.Content.Data.Id)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if sir.Code != http.StatusOK {
+		t.Fatalf("status code is %d", sir.Code)
+	}
+
+	if sir.Content.Data.SearchTerm != sr.Content.Data.SearchTerm {
+		t.Fatalf("status code is %d", sir.Code)
+	}
 }

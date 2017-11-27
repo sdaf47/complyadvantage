@@ -67,6 +67,15 @@ type User struct {
 	CreatedAt string `json:"created_at"`
 }
 
+type Searcher struct {
+	Id        string `json:"id"`
+	Email     string `json:"email"`
+	Name      string `json:"name"`
+	Phone     string `json:"phone"`
+	UpdatedAt string `json:"updated_at"`
+	CreatedAt string `json:"created_at"`
+}
+
 type Filter struct {
 	Types     []string `json:"types"`
 	BirthYear string   `json:"birth_year"`

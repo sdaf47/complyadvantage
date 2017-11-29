@@ -9,11 +9,32 @@ import (
 
 const (
 	TestSearchTerm = "vladimir putin"
+	BirthYearTest  = "1952"
 )
 
 var DefaultClient = NewClient("OedyQopDdU41uOtVBc8t7kbgvCnO0tHu") // todo env
 
 func TestClient_Searches(t *testing.T) {
+	r, err := DefaultClient.Searches(&SearchesRequest{
+		SearchTerm: TestSearchTerm,
+		Filters: &Filter{
+			BirthYear: BirthYearTest,
+		},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if r.Code != http.StatusOK {
+		t.Fatalf("status code is %d, error message: %s", r.Code, r.Message)
+	}
+
+	if r.Content.Data.SearchTerm != TestSearchTerm {
+		t.Fatalf("%s (resp) != %s (req)", r.Content.Data.SearchTerm, TestSearchTerm)
+	}
+}
+
+func TestClient_SearchesByTerm(t *testing.T) {
 	r, err := DefaultClient.SearchesByTerm(TestSearchTerm)
 	if err != nil {
 		t.Fatal(err)

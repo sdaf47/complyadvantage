@@ -80,13 +80,14 @@ type Filter struct {
 	Types     []string `json:"types"`
 	BirthYear string   `json:"birth_year"`
 
-	// 1 or 0
+	//// 1 or 0
 	RemoveDeceased int `json:"remove_deceased"`
 
 	Passport   string  `json:"passport"`
 	EntityType string  `json:"entity_type"`
-	ExactMatch bool    `json:"exact_match"`
-	Fuzziness  float64 `json:"fuzziness"`
+
+	ExactMatch bool    `json:"-"`
+	Fuzziness  float64 `json:"-"`
 }
 
 type Hit struct {
